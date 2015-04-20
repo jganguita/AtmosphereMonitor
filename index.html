@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js'></script>
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <title>MyGardenSpy</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="dashboard.css" rel="stylesheet">
+
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+<!-- Google Charts -->
+
+<script type='text/javascript'>
+    google.load('visualization', '1', {packages:['gauge']});     
+    google.setOnLoadCallback(initCharts);
+        
+    var chart1; //garden air temp
+    var chart2; //garden ground temp
+    var chart3; //soil moisture
+    
+    var data1;
+    var data2;
+    var data3;
+ 
+    function displayData1(point) {
+     
+        data1.setValue(0, 0, 'Air');
+        data1.setValue(0, 1, point);    
+        chart1.draw(data1, options1);     
+    }
+ 
+    function loadData1() {
+        // variable for the data point
+        var p;
+     
+        $.getJSON('https://api.xively.com/v2/feeds/825299082/datastreams/TempOffice.json?&key=t5S5xgoNZoWmh5MGAdv7QX5LKzgnOSEY5CWjyrzOMfCexMUd&callback=?', function(data) {
+            // get the data point from Xively
+            p = data.current_value;
+                         
+            if (p) {
+                p = (p/1);
+                displayData1(p);
+            }
+        });
+    }
+ 
+    function initChart1() {
+        data1 = new google.visualization.DataTable();
+        data1.addColumn('string', 'Label');
+        data1.addColumn('number', 'Value');
+        data1.addRows(1);
+        chart1 = new google.visualization.Gauge(document.getElementById('chart_div1'));
+//air temps chart options
+        options1 = {
+            width: 300, 
+            height: 300, 
+             
+            redFrom: 30, 
+            redTo: 50,
+             
+            yellowFrom: 27, 
+            yellowTo: 33, 
+             
+            greenFrom: 18, 
+            greenTo: 27, 
+			             
+            minorTicks: 10,
+             
+            min: 0, 
+            max: 40, 
+             
+            animation: {
+                duration: 400, 
+                easing: 'out',
+            },
+        };
+        loadData1();
+ 
+        setInterval('loadData1()', 1000);
+    }
+    function displayData2(point) {
+        data2.setValue(0, 0, 'Soil');
+        data2.setValue(0, 1, point);    
+        chart2.draw(data2, options2);  
+    }
+    function loadData2() {
+        // variable for the data point
+        var p;
+     
+        $.getJSON('https://api.xively.com/v2/feeds/825299082/datastreams/HumOffice.json?&key=t5S5xgoNZoWmh5MGAdv7QX5LKzgnOSEY5CWjyrzOMfCexMUd&callback=?', function(data) {
+            // get the data point from Xively
+            p = data.current_value;
+            if (p) {
+                p = (p/1);
+                displayData2(p);
+            }
+        });
+    }
+    function initChart2() {
+        data2 = new google.visualization.DataTable();
+        data2.addColumn('string', 'Label');
+        data2.addColumn('number', 'Value');
+        data2.addRows(1);
+        chart2 = new google.visualization.Gauge(document.getElementById('chart_div2'));
+/*
+Air Humidity chart options
+green/yellow/red yet to be determined, these values estimates at this point
+*/
+        options2 = {
+         
+           width: 300, 
+            height: 300, 
+             
+            redFrom: 60, 
+            redTo: 100,
+             
+            yellowFrom: 0, 
+            yellowTo: 0, 
+             
+            greenFrom: 20, 
+            greenTo: 50, 
+			
+			redFrom: 0,
+			redTo: 0,
+			             
+            minorTicks: 10,
+             
+            min: 0, 
+            max: 100, 
+             
+            animation: {
+                duration: 400, 
+                easing: 'out',
+            },
+        };
+        loadData2();
+ 
+        setInterval('loadData2()', 1000);
+    }
+    function initCharts() {
+       initChart1();
+       initChart2();
+       initChart3();
+    }
+    
+    function displayData3(point) {
+        data3.setValue(0, 0, 'Humidity');
+        data3.setValue(0, 1, point);    
+        chart3.draw(data3, options3);  
+    }
+    function loadData3() {
+        // variable for the data point
+        var p;
+     
+        $.getJSON('https://api.xively.com/v2/feeds/1824193320/datastreams/soil_moist.json?&key=hKcMzj9z2zXxwSKr8pvvyCdrsKnhdajFA7ocUt8xWLJOjsA8&callback=?', function(data) {
+            // get the data point from Xively
+            p = data.current_value;
+            if (p) {
+                p = (p/1);
+                displayData3(p);
+            }
+        });
+    }
+    function initChart3() {
+        data3 = new google.visualization.DataTable();
+        data3.addColumn('string', 'Label');
+        data3.addColumn('number', 'Value');
+        data3.addRows(1);
+        chart3 = new google.visualization.Gauge(document.getElementById('chart_div3'));
+/*
+Soil Moisture chart options
+green/yellow/red based on my model Solar charge controller
+*/
+        options3 = {
+         
+            redFrom: 0, 
+            redTo: 30,
+             
+            redFrom: 60, 
+            redTo: 1000, 
+            
+            greenFrom: 40, 
+            greenTo: 50, 
+             
+            minorTicks: 10,
+             
+            min: 0, 
+            max: 100, 
+             
+            animation: {
+                duration: 400, 
+                easing: 'out',
+            },
+        };
+        loadData3();
+ 
+        setInterval('loadData3()', 1230000);
+    }
+</script>
+
+  </head>
+
+  <body>
+ <!--   <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">MyGardenSpy</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-left">
+            <li><a href="index.html">Current Conditions</a></li>
+            <li><a href="historical.html">Historical Data</a></li>
+            <li><a href="hardware.html">Hardware Status</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="index.html">Current Conditions</a></li>
+            <li><a href="historical.html">Historical Data</a></li>
+            <li><a href="hardware.html">Hardware Status</a></li>
+          </ul>
+        </div>
+-->
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Atmospheric conditions in Kukupia's Headquarter</h1>
+          <span class="text-muted">Latest weather report below. Raw data can be found
+                     <a href="https://xively.com/feeds/825299082" target="_blank">at Xively</a>
+            </span> 
+<!-- Might be nice to reflect the last time the results were updated  date/time-->
+          <div class="row placeholders">
+
+            <div class="col-xs-6 col-sm-3 placeholder">
+              <div id="chart_div1"></div>
+              <h4>Air Temperature °C</h4>
+              <!--<span class="text-muted">DHT11 Sensor</span>-->
+            </div>
+
+			<div class="col-xs-6 col-sm-3 placeholder">
+              <div id="chart_div2"></div>
+              <h4>Ambient Humidity %</h4>
+              <!--<span class="text-muted">DHT11 Sensor</span>-->
+			</div>
+ 
+		  </div>
+			
+        </div>
+          
+<!-- PNG Xively Calls -->
+<img src=https://api.xively.com/v2/feeds/825299082/datastreams/TempOffice.png?w=800&h=200&c=2188c5&g=true&t=Last%2024Hrs%20Temperature%20History&b=true&duration=1day&scale=Datastream&timezone=-05&l=Kukupia´s%20Office%20Air%20Temperature%20ºC>  
+  
+<img src=https://api.xively.com/v2/feeds/825299082/datastreams/HumOffice.png?w=800&h=200&c=2188c5&g=true&t=Last%2024Hrs%20Humidity%20History&b=true&duration=1day&scale=Datastream&timezone=-05&l=Kukupia´s%20Office%20Air%20Humidity%20%25>  
+
+
+
+ 
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/docs.min.js"></script>
+
+
+
+</body>
+</html>

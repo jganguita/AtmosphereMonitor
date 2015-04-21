@@ -10,7 +10,7 @@
 
     <link rel="shortcut icon" href="favicon.ico">
 
-    <title>MyGardenSpy</title>
+    <title>Kukupia's Office</title>
 
     <!-- Bootstrap core CSS -->
     <link href="./css/bootstrap.min.css" rel="stylesheet">
@@ -41,7 +41,7 @@
  
     function displayData1(point) {
      
-        data1.setValue(0, 0, 'Air');
+        data1.setValue(0, 0, 'Temperature');
         data1.setValue(0, 1, point);    
         chart1.draw(data1, options1);     
     }
@@ -96,7 +96,7 @@
         setInterval('loadData1()', 1000);
     }
     function displayData2(point) {
-        data2.setValue(0, 0, 'Soil');
+        data2.setValue(0, 0, 'Humidity');
         data2.setValue(0, 1, point);    
         chart2.draw(data2, options2);  
     }
